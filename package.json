@@ -1,0 +1,14 @@
+{
+  "name": "cordova.geotab.iox.usb.manager",
+  "version": "0.0.1",
+  "description": "",
+  "cordova": {
+    "id": "cordova.geotab.iox.usb.manager",
+    "platforms": []
+  },
+  "keywords": [
+    "ecosystem:cordova"
+  ],
+  "author": "",
+  "license": "ISC"
+}
