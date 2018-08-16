@@ -7,10 +7,16 @@
     <platform name="android">
         <config-file parent="/*" target="res/xml/config.xml">
             <feature name="IoxUSBManager">
-                <param name="android-package" value="cordova.geotab.iox.usb.manager.IoxUSBManager" />
+                <param name="android-package" value="android.geotab.ioxusbmanager.IoxUSBManager" />
+                <param name="onload" value="true" />
             </feature>
         </config-file>
-        <config-file parent="/*" target="AndroidManifest.xml"></config-file>
-        <source-file src="src/android/IoxUSBManager.java" target-dir="src/cordova/geotab/iox/usb/manager/IoxUSBManager" />
+        <config-file parent="/manifest/application/activity[@android:name='MainActivity']" target="AndroidManifest.xml">
+            <meta-data android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" android:resource="@xml/accessory_filter" />
+        </config-file>
+        <source-file src="src/android/geotab/ioxusbmanager/IoxUSBManager.java" target-dir="src/cordova/geotab/iox/usb/manager/IoxUSBManager" />
+        <source-file src="src/android/geotab/ioxusbmanager/USBAccessoryControl.java" target-dir="src/cordova/geotab/iox/usb/manager/USBAccessoryControl" />
+        <source-file src="src/android/geotab/ioxusbmanager/IoxBroadcastReceiver.java" target-dir="src/cordova/geotab/iox/usb/manager/IoxBroadcastReceiver" />
+        <source-file src="res/xml/accessory_filter.xml" target-dir="res/xml" />
     </platform>
 </plugin>
