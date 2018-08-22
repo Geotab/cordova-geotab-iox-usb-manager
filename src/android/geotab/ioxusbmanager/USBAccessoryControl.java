@@ -11,45 +11,52 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
 import android.app.Activity;
 
 public class USBAccessoryControl {
     public static final String ACTION_USB_PERMISSION = "android.geotab.ioxusbmanager.MainActivity.action.USB_PERMISSION";
+    public static FileOutputStream mOutputStream;
+    public static FileInputStream mInputStream;
+    public static boolean mfConnectionOpen;
+    public static MessageHandler messageHandler;
+    public static HOSData hosData = new HOSData();
+
     private static final String TAG = USBAccessoryControl.class.getSimpleName();
     private static final String ACC_MANUF = "Geotab";
     private static final String ACC_MODEL = "IOX USB";
-    private FileOutputStream mOutputStream;
-    private FileInputStream mInputStream;
-    private boolean mfPermissionRequested, mfConnectionOpen;
+
+    private boolean mfPermissionRequested;
     private Context mContext;
     private Activity mActivity;
     private UsbManager mUSBManager;
     private ParcelFileDescriptor mParcelFileDescriptor;
+    private IoxUSBReader ioxUsbDataReader;
+    private IoxUSBStateManager stateManager;
 
     public static enum OpenStatus {
         CONNECTED, REQUESTING_PERMISSION, UNKNOWN_ACCESSORY, NO_ACCESSORY, NO_PARCEL
     }
 
-    public USBAccessoryControl(Context context, Activity activity)
+    public USBAccessoryControl(Context context)
 	{
-		mfPermissionRequested = false;
-		mfConnectionOpen = false;
-		// mThirdParty = null;
+        USBAccessoryControl.mfConnectionOpen = false;
 
+		mfPermissionRequested = false;
+        messageHandler = new MessageHandler(this);
         mContext = context;
-        mActivity = activity;
-		mUSBManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+
+        mUSBManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
     }
 
     public OpenStatus open()
 	{
-		if (mfConnectionOpen)
-			return USBAccessoryControl.OpenStatus.CONNECTED;
+		if (USBAccessoryControl.mfConnectionOpen) {
+            return USBAccessoryControl.OpenStatus.CONNECTED;
+        }
 
 		UsbAccessory[] accList = mUSBManager.getAccessoryList();
-		if (accList != null && accList.length > 0) {
+
+        if (accList != null && accList.length > 0) {
 			if (mUSBManager.hasPermission(accList[0])) {
                 return open(accList[0]);
             }
@@ -58,7 +65,8 @@ public class USBAccessoryControl {
 				Log.i(TAG, "Requesting USB permission");
 
 				PendingIntent permissionIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
-				mUSBManager.requestPermission(accList[0], permissionIntent);
+
+                mUSBManager.requestPermission(accList[0], permissionIntent);
 				mfPermissionRequested = true;
 
 				return USBAccessoryControl.OpenStatus.REQUESTING_PERMISSION;
@@ -68,27 +76,28 @@ public class USBAccessoryControl {
     }
 
     public OpenStatus open(UsbAccessory accessory) {
-        if (mfConnectionOpen)
+        if (USBAccessoryControl.mfConnectionOpen) {
             return USBAccessoryControl.OpenStatus.CONNECTED;
+        }
 
-        // Check if the accessory is supported by this app
         if (!ACC_MANUF.equals(accessory.getManufacturer()) || !ACC_MODEL.equals(accessory.getModel())) {
             Log.i(TAG, "Unknown accessory: " + accessory.getManufacturer() + ", " + accessory.getModel());
             return USBAccessoryControl.OpenStatus.UNKNOWN_ACCESSORY;
         }
 
-        // Open read/write streams for the accessory
         mParcelFileDescriptor = mUSBManager.openAccessory(accessory);
 
         if (mParcelFileDescriptor != null) {
             FileDescriptor fd = mParcelFileDescriptor.getFileDescriptor();
-            mOutputStream = new FileOutputStream(fd);
-            mInputStream = new FileInputStream(fd);
+            USBAccessoryControl.mOutputStream = new FileOutputStream(fd);
+            USBAccessoryControl.mInputStream = new FileInputStream(fd);
 
-            mfConnectionOpen = true;
+            USBAccessoryControl.mfConnectionOpen = true;
 
-            // mReceiver = new Receiver();
-            // new Thread(mReceiver).start(); // Run the receiver as a separate thread
+            stateManager = new IoxUSBStateManager();
+            ioxUsbDataReader = new IoxUSBReader(stateManager);
+            new Thread(ioxUsbDataReader, "Data reader thread").start();
+            new Thread(stateManager, "State manager of GO device thread").start();
 
             return USBAccessoryControl.OpenStatus.CONNECTED;
         }
