@@ -115,7 +115,7 @@ public class USBAccessoryControl {
         mfConnectionOpen = false;
 
         // End the receiver thread
-        // mReceiver.close();
+        ioxUsbDataReader.close();
         Log.i(TAG, "Receiver Thread closed");
 
         // Close the data streams

@@ -14,6 +14,7 @@ import android.content.Context;
 import android.app.Activity;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbAccessory;
+import android.hardware.usb.UsbManager;
 
 /**
  * This class echoes a string called from JavaScript.
@@ -37,9 +38,10 @@ public class IoxUSBManager extends CordovaPlugin {
         receiver = new IoxBroadcastReceiver(accessoryControl);
 
         IntentFilter filter = new IntentFilter(USBAccessoryControl.ACTION_USB_PERMISSION);
-        new ShowToastUtil(ctx, activity);
-
+        filter.addAction(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
         activity.registerReceiver(receiver, filter);
+
+        new ShowToastUtil(ctx, activity);
     }
 
     @Override
@@ -56,7 +58,7 @@ public class IoxUSBManager extends CordovaPlugin {
         if (callback != null) {
             try {
                 JSONObject parameter = new JSONObject();
-                parameter.put("myData", data);
+                parameter.put("data", data);
                 PluginResult result = new PluginResult(PluginResult.Status.OK, parameter);
                 result.setKeepCallback(true);
                 callback.sendPluginResult(result);
@@ -70,5 +72,19 @@ public class IoxUSBManager extends CordovaPlugin {
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
         accessoryControl.open();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        accessoryControl.close();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        accessoryControl.close();
     }
 }

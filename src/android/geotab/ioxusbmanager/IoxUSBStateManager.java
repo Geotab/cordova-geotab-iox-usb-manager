@@ -34,8 +34,6 @@ public class IoxUSBStateManager implements Runnable {
     private AtomicBoolean isStateRunning = new AtomicBoolean(true);
 
     public void run() {
-       ShowToastUtil.showToastFromThread(TAG, "IoxUSBStateManager started");
-
         while (isStateRunning.get()) {
             mLock.lock(); // The lock is needed for await and atomic access to flags/buffers
 
@@ -61,7 +59,6 @@ public class IoxUSBStateManager implements Runnable {
                     case SEND_CONFIRMATION: {
                         byte[] abMessage = MessageHandler.BuildMessage(MESSAGE_CONFIRMATION, HOS_ENHANCED_ID_WITH_ACK);
                         USBAccessoryControl.messageHandler.write(abMessage);
-                        ShowToastUtil.showToastFromThread(TAG, "HOS Connected");
                         eState = State.PRE_IDLE;
                         break;
                     }

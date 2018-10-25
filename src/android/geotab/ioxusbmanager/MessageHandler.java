@@ -103,11 +103,11 @@ public class MessageHandler {
             int iLatitude = abConvert.getInt();
             USBAccessoryControl.hosData.Latitude = (float) iLatitude / 10000000; // (Units given in 10^-7)
 
-            byte[] abLogitude = new byte[4];
-            System.arraycopy(abData, 11, abLogitude, 0, abLogitude.length);
-            abConvert = ByteBuffer.wrap(abLogitude).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-            int iLogitude = abConvert.getInt();
-            USBAccessoryControl.hosData.Logitude = (float) iLogitude / 10000000; // (Units given in 10^-7)
+            byte[] abLongitude = new byte[4];
+            System.arraycopy(abData, 11, abLongitude, 0, abLongitude.length);
+            abConvert = ByteBuffer.wrap(abLongitude).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            int iLongitude = abConvert.getInt();
+            USBAccessoryControl.hosData.Longitude = (float) iLongitude / 10000000; // (Units given in 10^-7)
 
             USBAccessoryControl.hosData.iRoadSpeed = abData[15];
 
