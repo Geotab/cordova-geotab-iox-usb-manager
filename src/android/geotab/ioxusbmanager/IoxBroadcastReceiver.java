@@ -38,6 +38,7 @@ public class IoxBroadcastReceiver extends BroadcastReceiver {
             }
         } else if (UsbManager.ACTION_USB_ACCESSORY_DETACHED.equals(action)) {
             Log.i(TAG, "Detached");
+            IoxUSBManager.sendToJS("{state: \"detached\"}");
             accessoryControl.close();
         }
     }
