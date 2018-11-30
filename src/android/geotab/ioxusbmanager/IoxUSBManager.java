@@ -68,6 +68,12 @@ public class IoxUSBManager extends CordovaPlugin {
         }
     }
 
+    public static void sendToJS(JSONObject data) {
+        PluginResult result = new PluginResult(PluginResult.Status.OK, data);
+        result.setKeepCallback(true);
+        callback.sendPluginResult(result);
+    }
+
     @Override
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);

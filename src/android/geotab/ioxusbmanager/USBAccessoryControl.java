@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import android.util.Log;
 import android.app.Activity;
+import org.json.JSONObject;
 
 public class USBAccessoryControl {
     public static final String ACTION_USB_PERMISSION = "android.geotab.ioxusbmanager.MainActivity.action.USB_PERMISSION";
@@ -19,7 +20,7 @@ public class USBAccessoryControl {
     public static FileInputStream mInputStream;
     public static boolean mfConnectionOpen;
     public static MessageHandler messageHandler;
-    public static HOSData hosData = new HOSData();
+    public static JSONObject hosData = new JSONObject();
 
     private static final String TAG = USBAccessoryControl.class.getSimpleName();
     private static final String ACC_MANUF = "Geotab";

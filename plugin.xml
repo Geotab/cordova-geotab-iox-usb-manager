@@ -5,7 +5,6 @@
         <clobbers target="cordova.plugins.IoxUSBManager" />
     </js-module>
     <platform name="android">
-        <lib-file src="src/android/libs/gson-2.8.5.jar" />
         <config-file parent="/*" target="res/xml/config.xml">
             <feature name="IoxUSBManager">
                 <param name="android-package" value="android.geotab.ioxusbmanager.IoxUSBManager" />
@@ -22,7 +21,6 @@
         <source-file src="src/android/geotab/ioxusbmanager/IoxUSBStateManager.java" target-dir="src/cordova/geotab/iox/usb/manager/IoxUSBStateManager" />
         <source-file src="src/android/geotab/ioxusbmanager/ShowToastUtil.java" target-dir="src/cordova/geotab/iox/usb/manager/ShowToastUtil" />
         <source-file src="src/android/geotab/ioxusbmanager/MessageHandler.java" target-dir="src/cordova/geotab/iox/usb/manager/MessageHandler" />
-        <source-file src="src/android/geotab/ioxusbmanager/HOSData.java" target-dir="src/cordova/geotab/iox/usb/manager/HOSData" />
         <source-file src="res/xml/accessory_filter.xml" target-dir="res/xml" />
     </platform>
 </plugin>
