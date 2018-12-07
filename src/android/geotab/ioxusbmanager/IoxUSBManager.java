@@ -54,24 +54,12 @@ public class IoxUSBManager extends CordovaPlugin {
         return false;
     }
 
-    public static void sendToJS(String data) {
-        if (callback != null) {
-            try {
-                JSONObject parameter = new JSONObject();
-                parameter.put("data", data);
-                PluginResult result = new PluginResult(PluginResult.Status.OK, parameter);
-                result.setKeepCallback(true);
-                callback.sendPluginResult(result);
-            } catch (JSONException e) {
-                Log.e(TAG, e.toString());
-            }
-        }
-    }
-
     public static void sendToJS(JSONObject data) {
-        PluginResult result = new PluginResult(PluginResult.Status.OK, data);
-        result.setKeepCallback(true);
-        callback.sendPluginResult(result);
+        if (callback != null) {
+            PluginResult result = new PluginResult(PluginResult.Status.OK, data);
+            result.setKeepCallback(true);
+            callback.sendPluginResult(result);
+        }
     }
 
     @Override

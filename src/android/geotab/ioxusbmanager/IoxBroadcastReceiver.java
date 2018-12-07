@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.hardware.usb.UsbManager;
 import android.hardware.usb.UsbAccessory;
 import android.util.Log;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class IoxBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = IoxBroadcastReceiver.class.getSimpleName();
     private USBAccessoryControl accessoryControl;
+    private JSONObject attachStatus;
 
     public IoxBroadcastReceiver(USBAccessoryControl control) {
         accessoryControl = control;
@@ -30,6 +33,7 @@ public class IoxBroadcastReceiver extends BroadcastReceiver {
 
                 if (status == USBAccessoryControl.OpenStatus.CONNECTED) {
                     Log.i(TAG, "Connected (onReceive)");
+                    this.sendAttachedStatusToJS(true);
                 } else {
                     Log.i(TAG, "Error: " + status);
                 }
@@ -38,8 +42,17 @@ public class IoxBroadcastReceiver extends BroadcastReceiver {
             }
         } else if (UsbManager.ACTION_USB_ACCESSORY_DETACHED.equals(action)) {
             Log.i(TAG, "Detached");
-            IoxUSBManager.sendToJS("{state: \"detached\"}");
+            this.sendAttachedStatusToJS(false);
             accessoryControl.close();
         }
+    }
+
+    private void sendAttachedStatusToJS(Boolean attached) {
+        try {
+            attachStatus.put("attached", attached);
+        } catch (JSONException e) {
+            Log.e(TAG, e.toString());
+        }
+        IoxUSBManager.sendToJS(attachStatus);
     }
 }
