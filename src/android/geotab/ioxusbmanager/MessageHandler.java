@@ -82,36 +82,34 @@ public class MessageHandler {
 
     public void ExtractHOSData(byte[] abData) {
         synchronized (USBAccessoryControl.hosData) {
-            ByteBuffer abConvert;
-
-            byte[] abDateTime = new byte[4];
-            System.arraycopy(abData, 3, abDateTime, 0, abDateTime.length);
-            abConvert = ByteBuffer.wrap(abDateTime).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-            int iDateTime = abConvert.getInt();
+            byte[] dateTimeBytes = new byte[4];
+            System.arraycopy(abData, 3, dateTimeBytes, 0, dateTimeBytes.length);
+            ByteBuffer abConvertDateTime = ByteBuffer.wrap(dateTimeBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            int iDateTime = abConvertDateTime.getInt();
             Calendar gmtCalendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
             gmtCalendar.clear();
             gmtCalendar.set(2002, Calendar.JANUARY, 1); // (Units given in seconds since Jan 1, 2002)
             gmtCalendar.add(Calendar.SECOND, iDateTime);
             SimpleDateFormat dataFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.US);
 
-            byte[] abLatitude = new byte[4];
-            System.arraycopy(abData, 7, abLatitude, 0, abLatitude.length);
-            abConvert = ByteBuffer.wrap(abLatitude).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-            int iLatitude = abConvert.getInt();
+            byte[] latitudeBytes = new byte[4];
+            System.arraycopy(abData, 7, latitudeBytes, 0, latitudeBytes.length);
+            ByteBuffer convertLat = ByteBuffer.wrap(latitudeBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            int latitude = convertLat.getInt();
 
-            byte[] abLongitude = new byte[4];
-            System.arraycopy(abData, 11, abLongitude, 0, abLongitude.length);
-            abConvert = ByteBuffer.wrap(abLongitude).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-            int iLongitude = abConvert.getInt();
+            byte[] longitudeBytes = new byte[4];
+            System.arraycopy(abData, 11, longitudeBytes, 0, longitudeBytes.length);
+            ByteBuffer convertLon = ByteBuffer.wrap(longitudeBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            int longitude = convertLon.getInt();
 
-            byte[] abPRM = new byte[2];
-            System.arraycopy(abData, 16, abPRM, 0, abPRM.length);
-            abConvert = ByteBuffer.wrap(abPRM).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-            short iRPM = abConvert.getShort();
+            byte[] RPMBytes = new byte[2];
+            System.arraycopy(abData, 16, RPMBytes, 0, RPMBytes.length);
+            ByteBuffer convertRPM = ByteBuffer.wrap(RPMBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            short RPM = convertRPM.getShort();
 
-            byte[] abOdometer = new byte[4];
-            System.arraycopy(abData, 18, abOdometer, 0, abOdometer.length);
-            abConvert = ByteBuffer.wrap(abOdometer).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            byte[] odometerBytes = new byte[4];
+            System.arraycopy(abData, 18, odometerBytes, 0, odometerBytes.length);
+            ByteBuffer convertOdometer = ByteBuffer.wrap(odometerBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN);
 
             byte bStatus = abData[22];
             String sStatus = "";
@@ -152,38 +150,38 @@ public class MessageHandler {
                 sStatus += "Distance From GPS | ";
             }
 
-            byte[] abTripOdometer = new byte[4];
-            System.arraycopy(abData, 23, abTripOdometer, 0, abTripOdometer.length);
-            abConvert = ByteBuffer.wrap(abTripOdometer).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            byte[] tripOdometerBytes = new byte[4];
+            System.arraycopy(abData, 23, tripOdometerBytes, 0, tripOdometerBytes.length);
+            ByteBuffer convertTripOdometer = ByteBuffer.wrap(tripOdometerBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN);
 
-            byte[] abEngineHours = new byte[4];
-            System.arraycopy(abData, 27, abEngineHours, 0, abEngineHours.length);
-            abConvert = ByteBuffer.wrap(abEngineHours).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            byte[] engineHoursBytes = new byte[4];
+            System.arraycopy(abData, 27, engineHoursBytes, 0, engineHoursBytes.length);
+            ByteBuffer convertEngineHours = ByteBuffer.wrap(engineHoursBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN);
 
-            byte[] abTripDuration = new byte[4];
-            System.arraycopy(abData, 31, abTripDuration, 0, abTripDuration.length);
-            abConvert = ByteBuffer.wrap(abTripDuration).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            byte[] tripDurationBytes = new byte[4];
+            System.arraycopy(abData, 31, tripDurationBytes, 0, tripDurationBytes.length);
+            ByteBuffer convertTripDuration = ByteBuffer.wrap(tripDurationBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN);
 
-            byte[] abVehicleId = new byte[4];
-            System.arraycopy(abData, 35, abVehicleId, 0, abVehicleId.length);
-            abConvert = ByteBuffer.wrap(abVehicleId).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            byte[] vehicleIdBytes = new byte[4];
+            System.arraycopy(abData, 35, vehicleIdBytes, 0, vehicleIdBytes.length);
+            ByteBuffer convertVehicleId = ByteBuffer.wrap(vehicleIdBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN);
 
-            byte[] abDriverId = new byte[4];
-            System.arraycopy(abData, 39, abDriverId, 0, abDriverId.length);
-            abConvert = ByteBuffer.wrap(abDriverId).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            byte[] driverIdBytes = new byte[4];
+            System.arraycopy(abData, 39, driverIdBytes, 0, driverIdBytes.length);
+            ByteBuffer convertDriverId = ByteBuffer.wrap(driverIdBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN);
             try {
                 USBAccessoryControl.hosData.put("dateTime", dataFormat.format(gmtCalendar.getTime()));
-                USBAccessoryControl.hosData.put("latitude", (float) iLatitude / 10000000); // (Units given in 10^-7)
-                USBAccessoryControl.hosData.put("longitude", (float) iLongitude / 10000000); // (Units given in 10^-7)
+                USBAccessoryControl.hosData.put("latitude", (float) latitude / 10000000); // (Units given in 10^-7)
+                USBAccessoryControl.hosData.put("longitude", (float) longitude / 10000000); // (Units given in 10^-7)
                 USBAccessoryControl.hosData.put("roadSpeed", abData[15]);
-                USBAccessoryControl.hosData.put("rpm", iRPM / 4); // Convert to RPM (Units given in 0.25)
-                USBAccessoryControl.hosData.put("odometer", abConvert.getInt()); // (Units given in 0.1/km)
+                USBAccessoryControl.hosData.put("rpm", RPM / 4); // Convert to RPM (Units given in 0.25)
+                USBAccessoryControl.hosData.put("odometer", convertOdometer.getInt()); // (Units given in 0.1/km)
                 USBAccessoryControl.hosData.put("status", sStatus);
-                USBAccessoryControl.hosData.put("tripOdometer", abConvert.getInt()); // (Units given in 0.1/km)
-                USBAccessoryControl.hosData.put("engineHours", abConvert.getInt()); // Already in units of 0.1h
-                USBAccessoryControl.hosData.put("tripDuration", abConvert.getInt()); // Units of seconds
-                USBAccessoryControl.hosData.put("vehicleId", abConvert.getInt());
-                USBAccessoryControl.hosData.put("driverId", abConvert.getInt());
+                USBAccessoryControl.hosData.put("tripOdometer", convertTripOdometer.getInt()); // (Units given in 0.1/km)
+                USBAccessoryControl.hosData.put("engineHours", convertEngineHours.getInt()); // Already in units of 0.1h
+                USBAccessoryControl.hosData.put("tripDuration", convertTripDuration.getInt()); // Units of seconds
+                USBAccessoryControl.hosData.put("vehicleId", convertVehicleId.getInt());
+                USBAccessoryControl.hosData.put("driverId", convertDriverId.getInt());
             } catch(JSONException ex) {
                 Log.e(TAG, "Exception when creating hosData message JSON", ex);
             }

@@ -13,7 +13,7 @@ public class IoxBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = IoxBroadcastReceiver.class.getSimpleName();
     private USBAccessoryControl accessoryControl;
-    private JSONObject attachStatus;
+    private JSONObject attachStatus = new JSONObject();
 
     public IoxBroadcastReceiver(USBAccessoryControl control) {
         accessoryControl = control;
