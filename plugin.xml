@@ -11,6 +11,9 @@
                 <param name="onload" value="true" />
             </feature>
         </config-file>
+        <config-file parent="/manifest" target="AndroidManifest.xml">
+            <uses-feature android:name="android.hardware.usb.accessory" />
+        </config-file>
         <config-file parent="/manifest/application/activity" target="AndroidManifest.xml">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
