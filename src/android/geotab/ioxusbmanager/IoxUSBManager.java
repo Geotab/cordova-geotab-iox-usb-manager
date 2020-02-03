@@ -13,6 +13,7 @@ import android.util.Log;
 import android.content.Context;
 import android.app.Activity;
 import android.content.IntentFilter;
+import android.content.Intent;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 
@@ -59,6 +60,13 @@ public class IoxUSBManager extends CordovaPlugin {
             PluginResult result = new PluginResult(PluginResult.Status.OK, data);
             result.setKeepCallback(true);
             callback.sendPluginResult(result);
+        }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        if (intent != null && UsbManager.ACTION_USB_ACCESSORY_ATTACHED.equals(intent.getAction())) {
+            receiver.sendAttachedStatusToJS(true);
         }
     }
 
