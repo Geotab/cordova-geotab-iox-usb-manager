@@ -47,7 +47,7 @@ public class IoxBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    private void sendAttachedStatusToJS(Boolean attached) {
+    void sendAttachedStatusToJS(Boolean attached) {
         try {
             attachStatus.put("attached", attached);
         } catch (JSONException e) {
