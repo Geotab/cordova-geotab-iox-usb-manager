@@ -182,6 +182,7 @@ public class MessageHandler {
                 USBAccessoryControl.hosData.put("tripDuration", convertTripDuration.getInt()); // Units of seconds
                 USBAccessoryControl.hosData.put("vehicleId", convertVehicleId.getInt());
                 USBAccessoryControl.hosData.put("driverId", convertDriverId.getInt());
+                USBAccessoryControl.hosData.put("rawData", abData);
             } catch(JSONException ex) {
                 Log.e(TAG, "Exception when creating hosData message JSON", ex);
             }
