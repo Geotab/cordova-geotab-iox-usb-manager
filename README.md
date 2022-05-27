@@ -1,4 +1,8 @@
+## Archived
+This Cordova plugin is now archived and is no longer supported by Geotab.
+
 # cordova-geotab-iox-usb-manager
+
 Plugin for data exchange between Android device and Geotab's GO device via IOX-USB wire
 
 To use this plugin you need just call the plugin's method `setCallback(cb)` with `cb` function. 
